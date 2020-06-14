@@ -32,6 +32,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     /**
      * 查询所有的分类信息，并组装父子结构
+     *
      * @return
      */
     @Override
@@ -42,10 +43,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         ).map(menu -> {
             menu.setChildren(getChildren(menu, categoryEntities));
             return menu;
-        }).sorted(
-                Comparator.comparing(CategoryEntity::getSort)
-        ).collect(Collectors.toList());
+        }).sorted((menu1, menu2) -> {
+            return (menu1.getSort() == null ? 0 : menu1.getSort()) - (menu2.getSort() == null ? 0 : menu2.getSort());
+        }).collect(Collectors.toList());
         return collect;
+    }
+
+    @Override
+    public void removeMenusByIds(List<Long> asList) {
+        //TODO 删除之前需检查菜单在其他地方是否用引用 项目整体设置逻辑删除
+        this.baseMapper.deleteBatchIds(asList);
     }
 
     /**
@@ -61,12 +68,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         ).map(menu -> {
             menu.setChildren(getChildren(menu, all));
             return menu;
-        }).sorted(
-                Comparator.comparing(categoryEntity ->
-                        //为空的情况判断处理
-                        categoryEntity.getSort(), Comparator.nullsLast(Integer::compareTo)
-                )
-        ).collect(Collectors.toList());
+        }).sorted((menu1, menu2) -> {
+            return (menu1.getSort() == null ? 0 : menu1.getSort()) - (menu2.getSort() == null ? 0 : menu2.getSort());
+        }).collect(Collectors.toList());
         return child;
     }
 }

@@ -85,12 +85,13 @@ public class CategoryController {
 
     /**
      * 删除
+     * @RequestBody 请求的方法必须是POST方法，请求的参数在body里
      */
     @RequestMapping("/delete")
 //    @RequiresPermissions("product:category:delete")
     public R delete(@RequestBody Long[] catIds){
-		categoryService.removeByIds(Arrays.asList(catIds));
-
+//		categoryService.removeByIds(Arrays.asList(catIds));
+        categoryService.removeMenusByIds(Arrays.asList(catIds));
         return R.ok();
     }
 

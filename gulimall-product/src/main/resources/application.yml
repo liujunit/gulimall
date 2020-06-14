@@ -6,8 +6,18 @@ spring:
     url: jdbc:mysql://192.168.1.13:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: root
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   global-config:
     db-config:
       id-type: auto
+      #逻辑删除配置，删除为1，操作字段加注解@TableLogic，需要单独的配置的在字段上属性上自己配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+logging:
+  level:
+    com.atguigu.gulimall: debug
